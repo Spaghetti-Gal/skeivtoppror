@@ -11,7 +11,7 @@ def create_csv():
         
         writer.writeheader()
         
-        id_counter = 1
+        id_counter = 0
         
         while True:
             content = get_input("Enter content (or type 'exit' to finish): ")
