@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <title>Skeivt Opprør</title>
   <script src="vue.js"></script>
-  <script src="vis-timeline-graph2d.min.js"></script>
-  <link href="vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
   <script src="csv2json.js"></script>
 </head>
 <style>
@@ -71,23 +69,30 @@ a:active {
 </style>
 <body>
   <div id="app">
-    <img src="stjernelogo.svg" class="logo"></img>
+    <img src="stjernelogo.svg" class="logo" alt="Logoen til Skeivt Opprør, en transinkluderende kjønnslogo og svart og rosa anarkiststjerne"></img>
     <br/>
+	
+	<!-- Her er listen over meny elementer. Legger man til et nytt element får menyen enda et valg "<a href="?page=[NAVNET I KODEN]">[Navnet brukerne skal se]</a>"-->
+	
     <div class="menu">
       <a href="?page=events">Arrangementer</a>
       <a href="?page=join">Bli med</a>
       <a href="?page=about">Hvem er vi</a>
+      <a href="?page=tilgjengelighet">Tilgjengelighet</a>
+      <a href="?page=opprorsdagan">Skeive Opprørsdagan</a>
       <a href="/files">Referat</a>
     </div>
     <div class="content">
 
+<!-- Denne siden har et program som automatisk skriver ut event liste fra dokumentet events.csv. IKKE RØR, plz -->
       <div v-if="page == 'events'">
-        <h1>Arrangementer</h1>
-        <div v-if="event !== null">
-          <b>Hva:</b> {{ event.content || "" }}<br/>
-          <b>Hvor:</b> {{ event.place || "" }}<br/>
-          <b>Start:</b> {{ event.start || "" }}<br/>
+        <h1>Kommende arrangementer</h1>
+
+          <div v-for="event in events">
+           <h2>{{ event.content || "" }}</h2>
+           <b>Start:</b> {{ event.start || "" }}<br/>
           <b>Slutt:</b> {{ event.end || "" }}<br/>
+          <b>Hvor:</b> {{ event.place || "" }}<br/>
           <b>Beskrivelse:</b><br/>
           {{ event.description || "" }}
           <br/>
@@ -97,7 +102,7 @@ a:active {
 
       <div v-if="page == 'join'">
         <h1>Bli med</h1>
-        For å bli med i Skeivt Opprør, er det bare å komme på arrangementer, og være aktiv. Vi har interne møter, og for å få bli med på dem, må noen gå god for deg. Vi tar opp nye i intern kommunikasjon etter konsensusbasert diskusjon på møter. 
+        For å bli med i Skeivt Opprør, er det bare å komme på arrangementer, og være aktiv. Vi har interne møter, og for å få bli med på dem, må noen gå god for deg. Vi tar opp nye i intern kommunikasjon og interne møter etter konsensusbasert diskusjon på møter. 
       </div>
 
       <div v-if="page == 'about'">
@@ -107,14 +112,42 @@ a:active {
 
         <p>Vi organiserer oss til skeiv kamp, ved at engasjerte skeive radikale aktivistar går saman og bråkar og gjer opprør. For at noko skal skje, treng vi altså at folk kjem med innsats og hjelper til. Det er altså ikkje basert på styre eller medlemskap.</p>
 
-        <p>Det heile starta med at nokre av oss slappa av ved marinen ein vårdag, og ville prøve oss på ukommersiell pride, framfor at vi hadde eit landsmøte og typiske foreiningsvedtak. Det er mange som vart med på organiseringa. Vi berre spurte om folk blei med på å laga nokre flagg og om folk ville halde appell. Vi fekk lov til å låne bokkaféen på Svartlamon til å ordne ting for det som etterkvart vart Skeive Opprørsdagan. Detta viser berre at det handlar om å gjera noko, og ikkje berre tenke på å organisere seg på teoretisk nivå. Vi har klart i fellesskap å engasjere oss, lære oss og lære bort, og klart å bygge ei skeiv radikal rørsle, bygd på sosialistiske, feministiske, antirasistiske, grøne, antiimperialistiske og anarkistiske prinsipp.</p>
+        <p>Det heile starta med at nokre av oss slappa av ved marinen ein vårdag 2020, og ville prøve oss på ukommersiell pride, framfor at vi hadde eit landsmøte og typiske foreiningsvedtak. Det er mange som vart med på organiseringa. Vi berre spurte om folk blei med på å laga nokre flagg og om folk ville halde appell. Vi fekk lov til å låne bokkaféen på Svartlamon til å ordne ting for det som etterkvart vart Skeive Opprørsdagan. Detta viser berre at det handlar om å gjera noko, og ikkje berre tenke på å organisere seg på teoretisk nivå. Vi har klart i fellesskap å engasjere oss, lære oss og lære bort, og klart å bygge ei skeiv radikal rørsle, bygd på sosialistiske, feministiske, antirasistiske, grøne, antiimperialistiske og anarkistiske prinsipp.</p>
 
         <p>Vi bygger på prinsipp av direktedemokrati. Vi skipar møte, der aktivistar kjem med forslag og idéar, og så kjem andre med sine forslag og idéar attpåtil. Vi kjem alltid fram til løysningar og folk fær koma inn med ord i kva vi skal gjera. På denna måten er vi alle med som organiserte og skeive radikale aktivistar, utan at vi har sentralstyre og organ å forhalde oss til. Skeivt Opprør er altså eit forum for å organisere seg, koma med refleksjonar, gjera aksjonisme, vise solidaritet og å bli høyrd som skeiv. Opp i alt detta, har Ivar Matlaus-bokkafé på Svartlamon vori ein fantastisk ressurs for oss. I tillegg har mange av våre aktivistar fengi si plattform til å ytre seg om skeive saker i Bråkmaker’n. Engasjementet for skeiv tematikk er så stort at vi til slutt må hava med eit kompendium i tillegg til den skeive utgåva i 2021.</p>
 
         <p>Vi er stolte, sinte, glade, og til tider både rare og perverse, og det ryktest at vi er både pøblar og folkefiendtlege! Detta er i alle fall titlar eg stend sterkt ved. Vi er rett  og slett ein gjeng med bråkmakarar!</p>
       </div>
 
-      <div id="visualization"></div>
+      <div v-if="page == 'tilgjengelighet'">
+        <h1>Tilgjengelighet</h1>
+        <p>De fleste av Skeivt Opprørs arrangementer foregår på Ivar Matlaus bokkafe. Vi har en rullestolrampe til inngangen, men toalettet har trinn for å komme inn og en smal innvendig dør. Toalettet er relativt lite, men ikke knøttlite. Enkel, kjønnsnøytral bås. </p>
+      </div>
+
+      <div v-if="page == 'opprorsdagan'">
+        <h1>Skeive Opprørsdagan</h1>
+        <p>27.juni - 3. juli 2024</p>
+        <p>Skeivt Opprør ønsker velkommen til Skeive Opprørsdagan 2024!</p>
+        <p>Info om events ligger under arrangementer og blir oppdatert fortløpende :)</p>
+
+        <h2>Historie</h2>
+        <p>Det braka laus i juni i 2020. Det var då den radikale skeive rørsla i Trondheim verkeleg byrja å organisere seg. Skeive Opprørsdagan i 2020 var  in stor suksess. Vi klarte å samle oss, hava mange diskusjonar om skeiv aktivisme, vi laga våre eigne flagg og fekk produsert buttons med radikale og solidariske bodskap. Det heile akkumulerte i at vi hadde ei stor markering av Stonewall-opprøret. Skeive opprørsdagan blei og organisert i 2021, med stor suksess.</p>
+      </div>
+
+	<!-- 
+	Slik lager man innholdet i en ny "side" på nettsiden.
+	
+		<div v-if="page == '[NAVNET I KODEN]'">
+        
+		Her skriver man innholdet til "siden"
+		
+		<h1>TITTEL</h1> gir TITTEL
+		<p>brødtekst</p> gir vanlig brødtekst
+		
+		</div>
+	  -->
+	  
+	  
     </div>
   </div>
   <script src="app.js"></script>
